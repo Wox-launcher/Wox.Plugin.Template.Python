@@ -4,15 +4,10 @@ version = "0.1.0"
 description = "replace_with_description"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-    "wox-plugin==0.0.48"
-]
+dependencies = ["wox-plugin==0.0.56"]
 
 [project.optional-dependencies]
-dev = [
-    "ruff",
-    "mypy"
-]
+dev = ["ruff", "mypy"]
 
 [tool.ruff]
 line-length = 140
