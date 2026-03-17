@@ -2,7 +2,7 @@ name: Update wox-plugin dependency
 
 on:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v5
@@ -75,10 +75,10 @@ jobs:
         if: steps.update.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: 'chore: update wox-plugin to ${{ steps.update.outputs.version }}'
-          branch: 'ci/update-wox-plugin'
+          commit-message: "chore: update wox-plugin to ${{ steps.update.outputs.version }}"
+          branch: "ci/update-wox-plugin"
           delete-branch: true
-          title: 'chore: update wox-plugin to ${{ steps.update.outputs.version }}'
+          title: "chore: update wox-plugin to ${{ steps.update.outputs.version }}"
           body: |
             Updates the pinned `wox-plugin` dependency to the latest version published on PyPI.
 
