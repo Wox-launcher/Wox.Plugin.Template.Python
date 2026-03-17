@@ -55,5 +55,5 @@ test: check-init
 	uv run python -m unittest tests/test_friendly_names.py
 
 package: check-init build
-	cd $(DIST_DIR) && zip -r "../wox.plugin.测试.wox" .
+	cd $(DIST_DIR) && zip -r "../wox.plugin.{{.Name}}.wox" .
 	rm -rf $(DIST_DIR)
