@@ -75,6 +75,7 @@ jobs:
         if: steps.update.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
+          assignees: qianlifeng
           commit-message: "chore: update wox-plugin to ${{ steps.update.outputs.version }}"
           branch: "ci/update-wox-plugin"
           delete-branch: true
