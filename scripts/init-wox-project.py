@@ -117,7 +117,7 @@ def update_makefile(package_name: str) -> None:
     content = MAKEFILE_PATH.read_text(encoding="utf-8")
     content = re.sub(
         r'(?m)^(\tcd \$\(DIST_DIR\) && zip -r "?\.\./wox\.plugin\.).+(\.wox"? \.)$',
-        f'\\1{package_name}\\2',
+        f"\\1{package_name}\\2",
         content,
         count=1,
     )
