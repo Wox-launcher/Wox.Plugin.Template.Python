@@ -1,7 +1,6 @@
 [project]
-name = "{{.Name}}"
+name = "wox_plugin"
 version = "0.0.1"
-description = "{{.Description}}"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["wox-plugin==0.0.70"]

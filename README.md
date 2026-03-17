@@ -1,5 +1,11 @@
 # {{.Name}}
 
+## Initialize
+
+```bash
+make init
+```
+
 # Install
 
 ```

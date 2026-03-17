@@ -1,17 +1,17 @@
 {
-    "Id": "replaceme_with_id",
+    "Id": "{{.Id}}",
     "TriggerKeywords": [
-        "replaceme_with_keyword"
+        "{{.TriggerKeyword}}"
     ],
-    "Name": "replaceme_with_name",
-    "Description": "replaceme_with_description",
-    "Author": "",
+    "Name": "{{.Name}}",
+    "Description": "{{.Description}}",
+    "Author": "{{.Author}}",
     "Version": "0.0.1",
     "MinWoxVersion": "2.0.0",
     "Runtime": "python",
-    "Website": "replaceme_with_website",
-    "Entry": "replaceme_with_projectname/main.py",
-    "Icon": "relative:image/app.png",
+    "Website": "{{.Website}}",
+    "Entry": "main.py",
+    "Icon": "relative:images/app.svg",
     "SupportedOS": [
         "windows",
         "linux",

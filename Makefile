@@ -1,49 +1,57 @@
-.PHONY: help install clean build publish
+.PHONY: help init check-init install clean lint format build test package
 
 DIST_DIR := dist
 SRC_DIR := src
+PYTHON ?= python3
 
 help:
 	@echo "Available commands:"
+	@echo "  make init    - Initialize template values interactively"
 	@echo "  make install  - Install project dependencies"
 	@echo "  make clean   - Clean build directory"
 	@echo "  make build   - Build project"
-	@echo "  make publish - Build and publish plugin package"
+	@echo "  make package - Build plugin package"
 
-install:
+init:
+	$(PYTHON) scripts/init-wox-project.py
+
+check-init:
+	@$(PYTHON) scripts/init-wox-project.py --check-initialized
+
+install: check-init
 	uv sync --all-extras
 
 clean:
 	rm -rf $(DIST_DIR)
 
-lint:
+lint: check-init
 	uv run ruff check src
 	uv run mypy src
 
-format:
+format: check-init
 	uv run ruff format src
 
 build: lint format
 	rm -rf $(DIST_DIR)
-	mkdir -p $(DIST_DIR)/replaceme_with_projectname
 	mkdir -p $(DIST_DIR)/dependencies
 	uv pip freeze > requirements.txt
 	uv pip install -r requirements.txt --target $(DIST_DIR)/dependencies
 	rm requirements.txt
-	cp -r $(SRC_DIR)/* $(DIST_DIR)/replaceme_with_projectname/
+	cp -r $(SRC_DIR)/* $(DIST_DIR)/
 	find $(DIST_DIR)/dependencies -type d -name "*.dist-info" -o -name "*.egg-info" | xargs rm -rf
 	find $(DIST_DIR)/dependencies -type f -name "__editable__*" -o -name ".lock" | xargs rm -f
 	rm -rf $(DIST_DIR)/dependencies/*mypy*
 	rm -rf $(DIST_DIR)/dependencies/ruff
 	rm -rf $(DIST_DIR)/dependencies/bin
-	echo 'import os\nimport sys\n\n# Add dependencies directory to Python path\ndeps_dir = os.path.join(os.path.dirname(__file__), "dependencies")\nif deps_dir not in sys.path:\n    sys.path.insert(0, deps_dir)\n\n# Import your actual plugin code\nfrom .replaceme_with_projectname.main import plugin\n\n__all__ = ["plugin"]' > $(DIST_DIR)/__init__.py
+	echo 'import os\nimport sys\n\n# Add dependencies directory to Python path\ndeps_dir = os.path.join(os.path.dirname(__file__), "dependencies")\nif deps_dir not in sys.path:\n    sys.path.insert(0, deps_dir)\n\nfrom .main import plugin\n\n__all__ = ["plugin"]' > $(DIST_DIR)/__init__.py
 	cp plugin.json $(DIST_DIR)/plugin.json
 	mkdir -p $(DIST_DIR)/image
 	cp image/* $(DIST_DIR)/image/
 
-test:
+test: check-init
 	uv run python -m unittest tests/test_friendly_names.py
 
-publish: build
-	cd $(DIST_DIR) && zip -r ../wox.plugin.replaceme_with_projectname.wox .
+package: check-init build
+	@package_name=$$($(PYTHON) -c 'import json, pathlib, re; data = json.loads(pathlib.Path("plugin.json").read_text()); value = data.get("Name") or data.get("Id") or "plugin"; value = re.sub(r"[^A-Za-z0-9._-]+", "_", value).strip("._-") or "plugin"; print(value)'); \
+	cd $(DIST_DIR) && zip -r ../wox.plugin.$$package_name.wox .
 	rm -rf $(DIST_DIR)
