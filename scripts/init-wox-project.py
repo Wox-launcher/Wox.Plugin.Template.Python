@@ -108,6 +108,12 @@ def package_name_from_plugin_name(name: str) -> str:
 
 def update_readme(name: str) -> None:
     content = README_PATH.read_text(encoding="utf-8")
+    content = re.sub(
+        r"^> For developer\n\n    Please run `make init` to initialize the project\.\n\n",
+        "",
+        content,
+        count=1,
+    )
     content = re.sub(r"^#\s+.*$", f"# {name}", content, count=1, flags=re.MULTILINE)
     content = re.sub(r"(?m)^wpm install .*$", f"wpm install {name}", content, count=1)
     README_PATH.write_text(content, encoding="utf-8")

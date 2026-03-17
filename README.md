@@ -1,10 +1,8 @@
+> For developer
+
+    Please run `make init` to initialize the project.
+
 # {{.Name}}
-
-## Initialize
-
-```bash
-make init
-```
 
 # Install
 
