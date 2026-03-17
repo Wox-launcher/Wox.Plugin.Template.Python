@@ -33,7 +33,7 @@ class MyPlugin(Plugin):
                 sub_title="this is subsitle",
                 icon=WoxImage(
                     image_type=WoxImageType.RELATIVE,
-                    image_data="image/app.png",
+                    image_data="images/app.svg",
                 ),
                 actions=[
                     ResultAction(
