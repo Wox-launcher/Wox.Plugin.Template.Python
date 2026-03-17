@@ -38,6 +38,10 @@ class MyPlugin(Plugin):
                 actions=[
                     ResultAction(
                         name="My Action",
+                        icon=WoxImage(
+                            image_type=WoxImageType.RELATIVE,
+                            image_data="images/app.svg",
+                        ),
                         prevent_hide_after_action=True,
                         context_data={"search_term": search_term},
                         action=self.action,
