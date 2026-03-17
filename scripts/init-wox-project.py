@@ -7,9 +7,9 @@ import uuid
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+MAKEFILE_PATH = ROOT / "Makefile"
 PLUGIN_JSON_PATH = ROOT / "plugin.json"
 README_PATH = ROOT / "README.md"
-PYPROJECT_PATH = ROOT / "pyproject.toml"
 PLACEHOLDER_PATTERN = re.compile(r"\{\{\.[A-Za-z]+\}\}")
 
 
@@ -102,9 +102,8 @@ def prompt_keywords(defaults: list[str]) -> list[str]:
         print("At least one trigger keyword is required.")
 
 
-def slugify_package_name(name: str) -> str:
-    normalized = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
-    return normalized or "wox-plugin"
+def package_name_from_plugin_name(name: str) -> str:
+    return name.strip().lower() or "plugin"
 
 
 def update_readme(name: str) -> None:
@@ -114,22 +113,15 @@ def update_readme(name: str) -> None:
     README_PATH.write_text(content, encoding="utf-8")
 
 
-def update_pyproject(package_name: str, description: str) -> None:
-    content = PYPROJECT_PATH.read_text(encoding="utf-8")
-    content = re.sub(r'(?m)^name\s*=\s*".*"$', f'name = "{package_name}"', content, count=1)
-
-    escaped_description = description.replace("\\", "\\\\").replace('"', '\\"')
-    if re.search(r'(?m)^description\s*=\s*".*"$', content):
-        content = re.sub(r'(?m)^description\s*=\s*".*"$', f'description = "{escaped_description}"', content, count=1)
-    else:
-        content = re.sub(
-            r'(?m)^(version\s*=\s*".*")$',
-            f'\\1\ndescription = "{escaped_description}"',
-            content,
-            count=1,
-        )
-
-    PYPROJECT_PATH.write_text(content, encoding="utf-8")
+def update_makefile(package_name: str) -> None:
+    content = MAKEFILE_PATH.read_text(encoding="utf-8")
+    content = re.sub(
+        r'(?m)^(\tcd \$\(DIST_DIR\) && zip -r "?\.\./wox\.plugin\.).+(\.wox"? \.)$',
+        f'\\1{package_name}\\2',
+        content,
+        count=1,
+    )
+    MAKEFILE_PATH.write_text(content, encoding="utf-8")
 
 
 def main() -> int:
@@ -154,8 +146,8 @@ def main() -> int:
     trigger_keywords = prompt_keywords(current_keywords)
     author = prompt("Author", current_author)
     website = prompt("Project website", current_website)
-    plugin_id = prompt("Plugin ID", current_id, required=True)
-    package_name = slugify_package_name(name)
+    plugin_id = current_id
+    package_name = package_name_from_plugin_name(name)
 
     print()
     print("Please confirm the following configuration:")
@@ -164,8 +156,8 @@ def main() -> int:
     print(f"  TriggerKeywords: {', '.join(trigger_keywords)}")
     print(f"  Author: {author or '(empty)'}")
     print(f"  Website: {website or '(empty)'}")
-    print(f"  Id: {plugin_id}")
-    print(f"  Python package name: {package_name}")
+    print(f"  ID: {plugin_id}")
+    print(f"  Package file name: {package_name}")
 
     confirmation = input("Write these values to the project files? [y/N]: ").strip().lower()
     if confirmation not in {"y", "yes"}:
@@ -181,7 +173,7 @@ def main() -> int:
 
     PLUGIN_JSON_PATH.write_text(json.dumps(plugin_data, indent=4, ensure_ascii=False) + "\n", encoding="utf-8")
     update_readme(name)
-    update_pyproject(package_name, description)
+    update_makefile(package_name)
 
     print("Initialization complete.")
     return 0

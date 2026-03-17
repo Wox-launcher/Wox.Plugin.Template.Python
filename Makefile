@@ -52,6 +52,5 @@ test: check-init
 	uv run python -m unittest tests/test_friendly_names.py
 
 package: check-init build
-	@package_name=$$($(PYTHON) -c 'import json, pathlib, re; data = json.loads(pathlib.Path("plugin.json").read_text()); value = data.get("Name") or data.get("Id") or "plugin"; value = re.sub(r"[^A-Za-z0-9._-]+", "_", value).strip("._-") or "plugin"; print(value)'); \
-	cd $(DIST_DIR) && zip -r ../wox.plugin.$$package_name.wox .
+	cd $(DIST_DIR) && zip -r "../wox.plugin.{{.Name}}.wox" .
 	rm -rf $(DIST_DIR)
