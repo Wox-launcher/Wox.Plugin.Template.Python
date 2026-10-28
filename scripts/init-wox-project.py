@@ -128,6 +128,10 @@ def update_makefile(package_name: str) -> None:
 
 
 def main() -> int:
+    if len(sys.argv) > 1 and sys.argv[1] == "--is-template":
+        content = PLUGIN_JSON_PATH.read_text(encoding="utf-8")
+        return 0 if '"{{.' + 'PluginID}}"' in content and '{{.' + 'TriggerKeywordsJSON}}' in content else 1
+
     if len(sys.argv) > 1 and sys.argv[1] == "--check-initialized":
         return check_initialized_command()
 

@@ -35,3 +35,7 @@ class TestTemplate(unittest.TestCase):
         self.assertEqual(data["Id"], "test-id")
         self.assertEqual(data["TriggerKeywords"], ["one", "two"])
         self.assertNotIn("{{", json.dumps(data))
+
+
+if __name__ == "__main__":
+    unittest.main()

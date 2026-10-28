@@ -1,0 +1,25 @@
+name: Validate plugin
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v5
+      - name: Initialize template when needed
+        run: |
+          if python scripts/init-wox-project.py --is-template; then
+            python scripts/test-template.py
+            printf 'Example Plugin\nExample description\nexample\nExample author\n\ny\n' | make init
+          fi
+      - run: uv sync --locked --all-extras
+      - run: make test
+      - run: make package

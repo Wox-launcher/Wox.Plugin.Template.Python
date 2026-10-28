@@ -71,6 +71,20 @@ jobs:
         if: steps.update.outputs.changed == 'true'
         run: uv lock
 
+      - name: Validate updated project
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          TEMP_PROJECT=$(mktemp -d)
+          tar --exclude=.git --exclude=.venv -cf - . | tar -xf - -C "$TEMP_PROJECT"
+          cd "$TEMP_PROJECT"
+          if python scripts/init-wox-project.py --is-template; then
+            python scripts/test-template.py
+            printf 'Example Plugin\nExample description\nexample\nExample author\n\ny\n' | make init
+          fi
+          uv sync --locked --all-extras
+          make test
+          make package
+
       - name: Create pull request
         if: steps.update.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
