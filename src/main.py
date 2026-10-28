@@ -6,6 +6,7 @@ from wox_plugin import (
     PluginInitParams,
     PublicAPI,
     Query,
+    QueryResponse,
     Result,
     ResultAction,
     WoxImage,
@@ -23,14 +24,14 @@ class MyPlugin(Plugin):
         await self.api.log(ctx, LogLevel.INFO, actionContext.context_data.get("search_term", ""))
         await self.api.notify(ctx, "Action executed!")
 
-    async def query(self, ctx: Context, query: Query) -> list[Result]:
+    async def query(self, ctx: Context, query: Query) -> QueryResponse:
         results: list[Result] = []
         search_term = query.search.lower() if query.search else ""
 
         results.append(
             Result(
                 title=f"you typed {search_term}",
-                sub_title="this is subsitle",
+                sub_title="Example result",
                 icon=WoxImage(
                     image_type=WoxImageType.RELATIVE,
                     image_data="images/app.svg",
@@ -50,7 +51,7 @@ class MyPlugin(Plugin):
             )
         )
 
-        return results
+        return QueryResponse(results=results)
 
 
 plugin = MyPlugin()

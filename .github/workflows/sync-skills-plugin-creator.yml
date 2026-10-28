@@ -22,17 +22,17 @@ jobs:
           repository: Wox-launcher/Wox
           path: _wox_upstream
           sparse-checkout: |
-            wox.core/resource/ai/skills/wox-plugin-creator
+            .agents/skills/wox-plugin-creator
           sparse-checkout-cone-mode: false
 
       - name: Sync skill files
         run: |
-          SOURCE="_wox_upstream/wox.core/resource/ai/skills/wox-plugin-creator"
+          SOURCE="_wox_upstream/.agents/skills/wox-plugin-creator"
           TARGET=".agents/skills/wox-plugin-creator"
 
           if [ ! -d "$SOURCE" ]; then
-            echo "Source directory not found, skipping"
-            exit 0
+            echo "Source directory not found" >&2
+            exit 1
           fi
 
           # Remove old files and copy new ones
@@ -45,6 +45,7 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
+          git add -N .agents/skills/wox-plugin-creator/
           git diff --quiet .agents/skills/wox-plugin-creator/ && echo "changed=false" >> "$GITHUB_OUTPUT" || echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Get upstream commit info
@@ -62,7 +63,7 @@ jobs:
           commit-message: "chore: sync wox-plugin-creator skill from upstream"
           title: "chore: sync wox-plugin-creator skill from Wox upstream"
           body: |
-            Auto-sync `wox-plugin-creator` skill from [Wox-launcher/Wox](https://github.com/Wox-launcher/Wox/tree/master/wox.core/resource/ai/skills/wox-plugin-creator).
+            Auto-sync `wox-plugin-creator` skill from [Wox-launcher/Wox](https://github.com/Wox-launcher/Wox/tree/master/.agents/skills/wox-plugin-creator).
 
             This PR is automatically created by GitHub Action.
           branch: auto/sync-wox-plugin-creator-skill

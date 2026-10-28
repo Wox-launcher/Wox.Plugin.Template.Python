@@ -169,3 +169,4 @@ wox.plugin.killprocess.wox
 .ruff_cache/
 
 *.wox
+.DS_Store

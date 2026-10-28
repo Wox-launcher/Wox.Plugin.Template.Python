@@ -67,7 +67,9 @@ def is_initialized(plugin_data: dict[str, object]) -> bool:
 
 
 def load_plugin_data() -> dict[str, object]:
-    return json.loads(PLUGIN_JSON_PATH.read_text(encoding="utf-8"))
+    content = PLUGIN_JSON_PATH.read_text(encoding="utf-8")
+    placeholder = "{{." + "TriggerKeywordsJSON}}"
+    return json.loads(content.replace(placeholder, '["{{.' + 'TriggerKeyword}}"]'))
 
 
 def check_initialized_command() -> int:
@@ -103,7 +105,7 @@ def prompt_keywords(defaults: list[str]) -> list[str]:
 
 
 def package_name_from_plugin_name(name: str) -> str:
-    return name.strip().lower() or "plugin"
+    return re.sub(r"[^a-z0-9_-]+", "-", name.strip().lower()).strip("-") or "plugin"
 
 
 def update_readme(name: str) -> None:

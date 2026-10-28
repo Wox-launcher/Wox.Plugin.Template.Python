@@ -1,15 +1,13 @@
 {
-    "Id": "{{.Id}}",
-    "TriggerKeywords": [
-        "{{.TriggerKeyword}}"
-    ],
+    "Id": "{{.PluginID}}",
+    "TriggerKeywords": {{.TriggerKeywordsJSON}},
     "Name": "{{.Name}}",
     "Description": "{{.Description}}",
     "Author": "{{.Author}}",
     "Version": "0.0.1",
-    "MinWoxVersion": "2.0.0",
+    "MinWoxVersion": "2.4.8",
     "Runtime": "python",
-    "Website": "{{.Website}}",
+    "Website": "",
     "Entry": "main.py",
     "Icon": "relative:images/app.svg",
     "SupportedOS": [

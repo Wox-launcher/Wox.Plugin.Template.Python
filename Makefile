@@ -18,6 +18,7 @@ help:
 	@echo "  make clean   - Clean build directory"
 	@echo "  make build   - Build project"
 	@echo "  make package - Build plugin package"
+	@echo "  make test    - Run tests"
 
 init:
 	$(PYTHON) scripts/init-wox-project.py
@@ -38,8 +39,8 @@ lint: check-init check-dev-deps
 format: check-init check-dev-deps
 	uv run ruff format src
 
-test: check-init
-	uv run python -m unittest tests/test_friendly_names.py
+test:
+	uv run python -m unittest discover -s tests
 
 clean:
 ifeq ($(OS),Windows_NT)
@@ -52,7 +53,7 @@ build: lint format
 ifeq ($(OS),Windows_NT)
 	if (Test-Path '$(DIST_DIR)') { Remove-Item -Recurse -Force '$(DIST_DIR)' }
 	New-Item -ItemType Directory -Force -Path '$(DIST_DIR)\dependencies' | Out-Null
-	uv pip freeze | Out-File -FilePath 'requirements.txt' -Encoding ascii
+	uv export --no-dev --no-emit-project --no-hashes --format requirements-txt | Out-File -FilePath 'requirements.txt' -Encoding ascii
 	uv pip install -r requirements.txt --target "$(DIST_DIR)\dependencies"
 	Remove-Item -Force 'requirements.txt'
 	Copy-Item '$(SRC_DIR)\*' -Destination '$(DIST_DIR)' -Recurse -Force
@@ -66,7 +67,7 @@ ifeq ($(OS),Windows_NT)
 else
 	rm -rf $(DIST_DIR)
 	mkdir -p $(DIST_DIR)/dependencies
-	uv pip freeze > requirements.txt
+	uv export --no-dev --no-emit-project --no-hashes --format requirements-txt > requirements.txt
 	uv pip install -r requirements.txt --target $(DIST_DIR)/dependencies
 	rm requirements.txt
 	cp -r $(SRC_DIR)/* $(DIST_DIR)/
