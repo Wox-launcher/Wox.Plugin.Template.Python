@@ -1,5 +1,7 @@
 .PHONY: help init check-init check-dev-deps install clean lint format build test package
 
+PLUGIN_NAME := {{.Name}}
+
 DIST_DIR := dist
 SRC_DIR := src
 
@@ -82,12 +84,12 @@ endif
 
 package: check-init build
 ifeq ($(OS),Windows_NT)
-	if (Test-Path 'wox.plugin.{{.Name}}.zip') { Remove-Item -Force 'wox.plugin.{{.Name}}.zip' }
-	if (Test-Path 'wox.plugin.{{.Name}}.wox') { Remove-Item -Force 'wox.plugin.{{.Name}}.wox' }
-	Compress-Archive -Path '$(DIST_DIR)\*' -DestinationPath 'wox.plugin.{{.Name}}.zip'
-	Move-Item 'wox.plugin.{{.Name}}.zip' 'wox.plugin.{{.Name}}.wox'
+	if (Test-Path 'wox.plugin.$(PLUGIN_NAME).zip') { Remove-Item -Force 'wox.plugin.$(PLUGIN_NAME).zip' }
+	if (Test-Path 'wox.plugin.$(PLUGIN_NAME).wox') { Remove-Item -Force 'wox.plugin.$(PLUGIN_NAME).wox' }
+	Compress-Archive -Path '$(DIST_DIR)\*' -DestinationPath 'wox.plugin.$(PLUGIN_NAME).zip'
+	Move-Item 'wox.plugin.$(PLUGIN_NAME).zip' 'wox.plugin.$(PLUGIN_NAME).wox'
 	if (Test-Path '$(DIST_DIR)') { Remove-Item -Recurse -Force '$(DIST_DIR)' }
 else
-	cd $(DIST_DIR) && zip -r "../wox.plugin.{{.Name}}.wox" .
+	cd $(DIST_DIR) && zip -r "../wox.plugin.$(PLUGIN_NAME).wox" .
 	rm -rf $(DIST_DIR)
 endif
