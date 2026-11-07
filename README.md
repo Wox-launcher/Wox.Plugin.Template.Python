@@ -16,6 +16,7 @@ make install  # Install runtime and development dependencies
 make test     # Run the tests
 make lint     # Run Ruff and mypy
 make package  # Create a .wox package in the project directory
+make sync-skills  # Replace the bundled skills with the latest versions from Wox
 ```
 
 `plugin.json` contains a JSON array placeholder until `make init` or the Wox scaffolder replaces it. After initialization, edit `src/main.py` to implement your plugin. Double-click the resulting `.wox` file to install it in Wox.
